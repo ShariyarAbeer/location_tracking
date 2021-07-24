@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -12,11 +14,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Position _currentPosition;
   String _currentAddress;
+  Timer timer;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+
+    timer = Timer.periodic(
+        Duration(seconds: 5), (Timer t) => _getCurrentLocation());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -34,7 +45,7 @@ class _HomeState extends State<Home> {
               child: Text("Get location"),
               onPressed: () {
                 _getCurrentLocation();
-                print(_getCurrentLocation());
+                // print(_getCurrentLocation());
               },
             ),
           ],
@@ -51,11 +62,9 @@ class _HomeState extends State<Home> {
       setState(() {
         _currentPosition = position;
         _getAddressFromLatLng();
-        print(_getAddressFromLatLng());
       });
     }).catchError((e) {
       print(e);
-      print(_getAddressFromLatLng());
     });
   }
 
@@ -68,7 +77,8 @@ class _HomeState extends State<Home> {
 
       setState(() {
         _currentAddress =
-            "${place.locality}, ${place.postalCode}, ${place.country}";
+            "${place.locality}, ${place.street}, ${place.country}";
+        print(_currentAddress);
       });
     } catch (e) {
       print(e);
