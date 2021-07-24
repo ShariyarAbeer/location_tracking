@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
 
       setState(() {
         _currentAddress =
-            "${place.locality}, ${place.street}, ${place.country}";
+            "${place.street}, ${place.locality}, ${place.country}";
         print(_currentAddress);
       });
     } catch (e) {
